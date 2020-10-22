@@ -75,30 +75,29 @@ app.use(morgan('dev')); // log every request to the console
 //app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res, next) {
-	var string = "<h2>This is an API used by QuranClipHelper.com... </h2>";
-	string += "\n you're more than welcome to use it but please don't bog down the network."
-	string += "\n usage --> url/translations/{translationID}/{surahNumber}/{ayahNumber} where translationID is a numeric value given by https://quran.api-docs.io/v3/getting-started API"
+	var string = "<h2>This is an API used by QuranClipHelper.com </h2>";
+	string += "\n <div>You're more than welcome to use it but please don't bog down the network.</div><br>"
+	string += "\n <div>Usage --> url/translations/{translationID}/{surahNumber}/{ayahNumber} where translationID is a numeric value given by https://quran.api-docs.io/v3/getting-started API</div><br>"
 	string += "\n If you have any questions or issues, please contact us at moazelsayedquran@gmail.com"
 	res.send(string);
 });
 
 app.get('/translations/:id/:surah/:ayah', function(req, res, next) {
-	// console.log(req.params);
-	// console.log(req.params.surah);
-	// console.log(req.params.ayah);
-
 	var translationArray = eval('t'+req.params.id);
-	var translationText;
+	var translationText = '';
 	for (var i = 0; i < translationArray.length; i++){
 		if (translationArray[i].surahAyah.split(":")[0] == req.params.surah && translationArray[i].surahAyah.split(":")[1] == req.params.ayah){
         	translationText = translationArray[i].translation;
         }
 	}
-	//vatranslationText translationArray.surah[req.params.surah].ayah[req.params.ayahtranslationText;
-	//res.set('Content-Type', 'application/json');
+	if( translationText == ''){
+		translationText = "Translation text cannot be found. Please contact us with surah and ayah."
+	}
+
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	res.send(translationText);
 });
-
 
 // Server listen on port 3000
 server.listen(port, function(){
