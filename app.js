@@ -4,6 +4,7 @@ var morgan = require('morgan');
 var port = process.env.PORT || 3000;
 var app = express();
 var server = require('http').createServer(app);
+var cors = require('cors');
 
 var t20 = require('./public/translations/t20.json');
 var t31 = require('./public/translations/t31.json');
@@ -69,15 +70,16 @@ var t104 = require('./public/translations/t104.json');
 
 
 // App Settings & Middleware
+app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev')); // log every request to the console
 //app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res, next) {
-	var string = "<h2>This is an API used by QuranClipHelper.com... </h2>";
-	string += "\n you're more than welcome to use it but please don't bog down the network."
-	string += "\n usage --> url/translations/{translationID}/{surahNumber}/{ayahNumber} where translationID is a numeric value given by https://quran.api-docs.io/v3/getting-started API"
+	var string = "<h2>This is an API used by QuranClipHelper.com</h2><br>";
+	string += "\n <div>You're more than welcome to use it but please don't bog down the network.</div><br>"
+	string += "\n <div>usage --> url/translations/{translationID}/{surahNumber}/{ayahNumber} where translationID is a numeric value given by https://quran.api-docs.io/v3/getting-started API</div><br>"
 	string += "\n If you have any questions or issues, please contact us at moazelsayedquran@gmail.com"
 	res.send(string);
 });
@@ -88,7 +90,7 @@ app.get('/translations/:id/:surah/:ayah', function(req, res, next) {
 	// console.log(req.params.ayah);
 
 	var translationArray = eval('t'+req.params.id);
-	var translationText;
+	var translationText = '';
 	for (var i = 0; i < translationArray.length; i++){
 		if (translationArray[i].surahAyah.split(":")[0] == req.params.surah && translationArray[i].surahAyah.split(":")[1] == req.params.ayah){
         	translationText = translationArray[i].translation;
@@ -96,6 +98,12 @@ app.get('/translations/:id/:surah/:ayah', function(req, res, next) {
 	}
 	//vatranslationText translationArray.surah[req.params.surah].ayah[req.params.ayahtranslationText;
 	//res.set('Content-Type', 'application/json');
+	if (translationText == ''){
+		translationText = "Translation text cannot be found! Please contact us immediately with the surah & ayah number."
+	}
+
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	res.send(translationText);
 });
 
