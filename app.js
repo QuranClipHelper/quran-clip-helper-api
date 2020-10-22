@@ -4,6 +4,7 @@ var morgan = require('morgan');
 var port = process.env.PORT || 3000;
 var app = express();
 var server = require('http').createServer(app);
+var cors = require('cors')
 
 var t20 = require('./public/translations/t20.json');
 var t31 = require('./public/translations/t31.json');
@@ -69,6 +70,7 @@ var t104 = require('./public/translations/t104.json');
 
 
 // App Settings & Middleware
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev')); // log every request to the console
