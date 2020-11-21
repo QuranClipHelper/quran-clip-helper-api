@@ -68,6 +68,8 @@ var t101 = require('./public/translations/t101.json');
 var t102 = require('./public/translations/t102.json');
 var t104 = require('./public/translations/t104.json');
 
+var ayahList = require('./public/ayahList.json');
+
 
 // App Settings & Middleware
 app.use(cors());
@@ -80,10 +82,13 @@ app.get('/', function(req, res, next) {
 	var string = "<h2>This is an API used by QuranClipHelper.com </h2>";
 	string += "\n <div>You're more than welcome to use it but please don't bog down the network.</div><br>"
 	string += "\n <div>Usage --> url/translations/{translationID}/{surahNumber}/{ayahNumber} where translationID is a numeric value given by https://quran.api-docs.io/v3/getting-started API</div><br>"
-	string += "\n If you have any questions or issues, please contact us at moazelsayedquran@gmail.com"
+	string += "\n <div>Usage --> url/arabic/{surahNumber}/{ayahNumber} for the arabic text</div><br>"
+	string += "\n <div>Usage --> url/titles/{surahNumber} for the surah image</div><br>"
+	string += "\n <br><div>If you have any questions or issues, please contact us at moazelsayedquran@gmail.com</div><br>"
 	res.send(string);
 });
 
+// Complete
 app.get('/translations/:id/:surah/:ayah', function(req, res, next) {
 	var translationArray = eval('t'+req.params.id);
 	var translationText = '';
@@ -99,6 +104,59 @@ app.get('/translations/:id/:surah/:ayah', function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	res.send(translationText);
+});
+
+app.get('/arabic/:surah/:ayah', function(req, res, next) {
+	var text = "";
+	for (var i = 0; i < ayahList.length; i++){
+		if (ayahList[i].surahAyah.split(":")[0] == req.params.surah && ayahList[i].surahAyah.split(":")[1] == req.params.ayah){
+        	text = ayahList[i].text;
+        }
+	}
+	if( text == ''){
+		text = "Arabic text cannot be found. Please contact us with surah and ayah."
+	}
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.send(text);
+});
+
+app.get('/english/:surah/:ayah', function(req, res, next) {
+	var text = "";
+	for (var i = 0; i < ayahList.length; i++){
+		if (ayahList[i].surahAyah.split(":")[0] == req.params.surah && ayahList[i].surahAyah.split(":")[1] == req.params.ayah){
+        	text = ayahList[i].english;
+        }
+	}
+	if( text == ''){
+		text = "English text cannot be found. Please contact us with surah and ayah."
+	}
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.send(text);
+});
+
+app.get('/glyph/:surah/:ayah', function(req, res, next) {
+	var text = "";
+	for (var i = 0; i < ayahList.length; i++){
+		if (ayahList[i].surahAyah.split(":")[0] == req.params.surah && ayahList[i].surahAyah.split(":")[1] == req.params.ayah){
+        	text = ayahList[i].codes;
+        }
+	}
+	if( text == ''){
+		text = "Glyph text cannot be found. Please contact us with surah and ayah."
+	}
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.send(text);
+});
+
+app.get('/titles/:surah', function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.contentType('image/png');
+    console.log(__dirname)
+	res.sendFile(__dirname + `/public/title/${req.params.surah}.png`);
 });
 
 // Server listen on port 3000
