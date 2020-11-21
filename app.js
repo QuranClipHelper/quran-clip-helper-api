@@ -137,14 +137,15 @@ app.get('/english/:surah/:ayah', function(req, res, next) {
 });
 
 app.get('/glyph/:surah/:ayah', function(req, res, next) {
-	var text = "";
+	var text = [];
 	for (var i = 0; i < ayahList.length; i++){
 		if (ayahList[i].surahAyah.split(":")[0] == req.params.surah && ayahList[i].surahAyah.split(":")[1] == req.params.ayah){
-        	text = ayahList[i].codes;
+        	text[0] = ayahList[i].codes;
+        	text[1] = ayahList[i].page;
         }
 	}
-	if( text == ''){
-		text = "Glyph text cannot be found. Please contact us with surah and ayah."
+	if( text.length == 0){
+		text[0] = "Glyph text cannot be found. Please contact us with surah and ayah."
 	}
 	res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
