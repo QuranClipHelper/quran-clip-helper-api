@@ -20,7 +20,6 @@ var t18 = require('./public/translations/t18.json');
 var t19 = require('./public/translations/t19.json');
 var t22 = require('./public/translations/t22.json');
 var t23 = require('./public/translations/t23.json');
-var t24 = require('./public/translations/t24.json');
 var t25 = require('./public/translations/t25.json');
 var t26 = require('./public/translations/t26.json');
 var t27 = require('./public/translations/t27.json');
